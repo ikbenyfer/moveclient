@@ -2,6 +2,16 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.5.3] — Xray: switched to fully-invisible blocks
+
+- **Changed**: after fixing 1.5.2's particle bug, the thin-shell geometry itself still looked
+  "weird". Rather than keep chasing an exact match to a third-party pack's geometry this project
+  has no way to visually test against, the covered blocks' models now declare `"elements": []` —
+  no geometry at all, so the block renders as nothing. Collision is a completely separate system
+  from the render model, so walking/mining is unaffected; the block is just invisible. This
+  removes the entire category of "looks different up close vs. far away" bug, since there's no
+  longer any geometry left to render inconsistently.
+
 ## [1.5.2] — Xray: fixed missing particles + a leftover model bug
 
 - **Fixed**: 1.5.1's thin-shell models never declared a `particle` texture variable (the

@@ -25,26 +25,26 @@ import java.util.List;
  *    was avoided after the scissor crash documented on {@code AntiKnockbackModule}/README.
  * 2. A real see-through-block resource pack bundled in this mod's own jar (`resourcepacks/xray/`,
  *    registered via Fabric's {@code ResourceLoader.registerBuiltinPack} in {@code ModClientInit}).
- *    Common stone/dirt-family blocks get a custom model overriding their vanilla one: instead of
- *    a full cube, each block shrinks to a thin (0.5/16) shell on each face, with
- *    {@code ambientocclusion: false} and {@code light_emission: 15} forcing it fully bright
- *    regardless of real lighting. Two identical shell blocks sitting next to each other still
- *    {@code cullface} their shared face away like normal cube models, so a solid mass of stone
- *    reads as empty — only faces exposed to air (cave walls, ore veins) show as thin, bright
- *    outlines. This replaced an earlier attempt that just made the block's whole texture
- *    transparent, which looked "weird" (reported: ores only visible very close, caves only very
- *    far) — full-cube transparency still has real depth/mip/lighting interactions at a distance
- *    that the thin-shell technique avoids entirely. Both this model technique and the
- *    {@code pack.mcmeta} `min_format`/`max_format`/`supported_formats` structure were verified by
- *    inspecting a working third-party x-ray pack's file structure (not copied — it wasn't
- *    redistributable, no license was included — reimplemented from scratch against the same,
- *    long-documented Minecraft model-format mechanism). Ore blocks are deliberately left with no
- *    override at all, so they render normally. This is pure resource-pack data (JSON models
- *    referencing vanilla's own existing textures, no custom PNGs needed) using Minecraft's
- *    ordinary, long-stable resource pack system, so unlike (1) it isn't exposed to any of this
- *    build's rendering-API churn at all. Enabling/disabling this module adds/removes the pack
- *    from the active {@link PackRepository} selection and triggers a resource reload (the same
- *    "Reloading resources..." flash as toggling a pack by hand in the Options menu).
+ *    Common stone/dirt-family blocks get a custom model overriding their vanilla one, with
+ *    {@code "elements": []} — no geometry at all, so the block renders as nothing while its
+ *    collision (a separate system from the render model) is completely untouched: you can still
+ *    walk on/mine it normally, it's just invisible. This went through two more elaborate
+ *    attempts first: (a) a fully-transparent whole-block texture, which looked "weird" at range
+ *    (ores only visible very close, caves only very far — plausibly mip/depth/fog interactions a
+ *    transparent-but-still-full-size cube has that this doesn't), and (b) a thin (0.5/16) shell
+ *    model with cull-faced edges (reverse-engineered from a working third-party pack's file
+ *    structure, not copied — it had no license and wasn't bundled), which fixed the shape issue
+ *    but still looked wrong after also fixing a missing-particle-texture bug that came with it.
+ *    Rather than keep chasing an exact geometric match to a pack this project can't visually
+ *    test against, dropping the geometry entirely removes the whole category of "some render
+ *    distance/angle looks subtly wrong" bug: there is nothing left to render incorrectly. Ore
+ *    blocks are deliberately left with no override at all, so they render normally against the
+ *    resulting empty space. Pure resource-pack data (JSON models, a `particle` texture reused
+ *    from vanilla's own existing textures, no custom PNGs) using Minecraft's ordinary,
+ *    long-stable resource pack system, so unlike (1) it isn't exposed to any of this build's
+ *    rendering-API churn at all. Enabling/disabling this module adds/removes the pack from the
+ *    active {@link PackRepository} selection and triggers a resource reload (the same "Reloading
+ *    resources..." flash as toggling a pack by hand in the Options menu).
  */
 public class XrayModule extends Module {
 
