@@ -32,12 +32,22 @@ public class ModClientInit implements ClientModInitializer {
             ModuleManager.getInstance().tickAll(client);
         });
 
+        // Registered as a single HudElement rather than two separate ones: this is a defensive
+        // consolidation onto the one registration already confirmed to render (the module list),
+        // so Xray's HUD text can no longer be affected by anything specific to being its own,
+        // second HudElementRegistry entry. A failure inside xrayHud.render() is caught and logged
+        // instead of silently disappearing, in case that's what was happening.
         HudElementRegistry.addLast(
-                Identifier.fromNamespaceAndPath("moveclient", "module_list"),
-                (graphics, deltaTracker) -> hud.render(graphics, deltaTracker));
-        HudElementRegistry.addLast(
-                Identifier.fromNamespaceAndPath("moveclient", "xray_list"),
-                (graphics, deltaTracker) -> xrayHud.render(graphics, deltaTracker));
+                Identifier.fromNamespaceAndPath("moveclient", "hud"),
+                (graphics, deltaTracker) -> {
+                    hud.render(graphics, deltaTracker);
+                    try {
+                        xrayHud.render(graphics, deltaTracker);
+                    } catch (RuntimeException e) {
+                        System.err.println("[moveclient] XrayHud.render threw:");
+                        e.printStackTrace();
+                    }
+                });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
                 ModuleManager.getInstance().reapplyEnabledOnJoin());
