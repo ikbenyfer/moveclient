@@ -2,6 +2,16 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.5.2] — Xray: fixed missing particles + a leftover model bug
+
+- **Fixed**: 1.5.1's thin-shell models never declared a `particle` texture variable (the
+  reference pack's `cube_all.json` layer did this via `"textures": {"particle": "#all"}`, which
+  was missed when reimplementing the technique independently). With ~30 extremely common blocks
+  (stone, dirt, grass, sand, gravel, ...) all missing a resolvable particle texture at once, this
+  is the most likely explanation for both the reported "still weird" rendering and **all
+  particles disappearing entirely** while Xray was enabled. Added the missing declaration to the
+  shared shell model so every covered block inherits it.
+
 ## [1.5.1] — Xray rebuilt with the thin-shell model technique
 
 - **Fixed**: 1.5.0's flat-transparent-texture approach looked "weird" in practice — ores only
