@@ -2,6 +2,25 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.5.0] — Xray now applies a real see-through texture pack
+
+- **Added**: Xray now bundles and auto-applies an actual resource pack (`resourcepacks/xray/`,
+  built into the mod jar) that makes common stone/dirt-family block textures fully transparent,
+  so ores are genuinely visible through terrain — not just listed as HUD text. Toggling the
+  module adds/removes the pack from the resource pack repository and triggers a reload (the same
+  "Reloading resources..." flash as switching a pack by hand). A new "Texture Pack" setting
+  (default on) lets you disable this half and keep just the HUD text readout, and changes to it
+  apply live without needing to re-toggle the module.
+- **Why**: the previous HUD-text-only approach turned out not to be visible for at least one
+  user despite passing every code review, and a proper texture pack sidesteps the whole
+  uncertain 3D-rendering-pipeline question entirely — it's just PNGs and a `pack.mcmeta` through
+  Minecraft's ordinary, decades-stable resource pack system, unrelated to any of this build's
+  rendering-API churn.
+- Covers stone, deepslate, dirt, grass, granite/diorite/andesite, tuff, calcite, gravel,
+  sand/red sand, sandstone/red sandstone, netherrack, blackstone, basalt, end stone, and a few
+  more — not an exhaustive list of every block in the game, but the common "digging through
+  solid ground" case.
+
 ## [1.4.1] — Xray HUD fix
 
 - **Fixed**: Xray's HUD text (the ore readout in the top-left corner) wasn't appearing at all,

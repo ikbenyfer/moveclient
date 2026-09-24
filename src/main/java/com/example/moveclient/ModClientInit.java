@@ -9,6 +9,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -26,6 +29,15 @@ public class ModClientInit implements ClientModInitializer {
     public void onInitializeClient() {
         keybindManager.registerAll();
         ConfigManager.load();
+
+        // Built-in resource pack backing the Xray module's texture-based view: transparent
+        // textures for common stone/dirt-family blocks, bundled inside this mod's own jar under
+        // resourcepacks/xray/. NORMAL activation means it's known to the pack repository but not
+        // enabled by default; XrayModule enables/disables it itself via addPack/removePack + a
+        // resource reload when the module is toggled.
+        FabricLoader.getInstance().getModContainer("moveclient").ifPresent(mod ->
+                ResourceLoader.registerBuiltinPack(
+                        Identifier.fromNamespaceAndPath("moveclient", "xray"), mod, PackActivationType.NORMAL));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             keybindManager.onClientTick(client);

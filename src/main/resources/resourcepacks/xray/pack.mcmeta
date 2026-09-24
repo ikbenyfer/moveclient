@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 88,
+    "description": "MoveClient Xray: makes common stone/dirt-family blocks fully transparent so ores are visible from a distance. Toggled automatically by the Xray module."
+  }
+}
