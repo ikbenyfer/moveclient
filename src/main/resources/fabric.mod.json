@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "moveclient",
+  "version": "${version}",
+  "name": "Movement Test Client",
+  "description": "Client-side movement mechanics test suite (Bhop, Flight, Anti-Knockback, NoFall) with a ClickGUI, for use in a private/controlled test world.",
+  "authors": ["Yf"],
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.moveclient.ModClientInit"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": ">=26.2-",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

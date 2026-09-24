@@ -1,0 +1,22 @@
+{
+  "key.moveclient.general": "Movement Test Client",
+  "key.moveclient.opengui": "Open ClickGUI",
+  "key.moveclient.toggle_bhop": "Toggle Bhop",
+  "key.moveclient.toggle_flight": "Toggle Flight",
+  "key.moveclient.toggle_speed": "Toggle Speed",
+  "key.moveclient.toggle_step": "Toggle Step",
+  "key.moveclient.toggle_highjump": "Toggle HighJump",
+  "key.moveclient.toggle_gravity": "Toggle Gravity",
+  "key.moveclient.toggle_autosprint": "Toggle AutoSprint",
+  "key.moveclient.toggle_spider": "Toggle Spider",
+  "key.moveclient.toggle_airjump": "Toggle AirJump",
+  "key.moveclient.toggle_noclip": "Toggle NoClip",
+  "key.moveclient.toggle_elytraboost": "Toggle ElytraBoost",
+  "key.moveclient.toggle_antiknockback": "Toggle Anti-Knockback",
+  "key.moveclient.toggle_nofall": "Toggle NoFall",
+  "key.moveclient.toggle_jesus": "Toggle Jesus",
+  "key.moveclient.toggle_autototem": "Toggle AutoTotem",
+  "key.moveclient.toggle_xray": "Toggle Xray",
+  "key.moveclient.toggle_criticals": "Toggle Criticals",
+  "key.moveclient.toggle_killaura": "Toggle Killaura"
+}
