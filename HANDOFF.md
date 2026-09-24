@@ -146,22 +146,29 @@ GPU/driver (the report that surfaced this had AMD driver info in the crash log).
 
 ## Known limitations (deliberate, not oversights)
 
-- **Mixins are avoided by default; one exception exists.** Every module except Xray works
+- **Mixins are avoided by default; two exceptions exist, both in Xray.** Every other module works
   through public vanilla/Fabric API only. This was a deliberate choice given how much of the
   "expected" API surface turned out to be wrong for this build — a wrong Mixin target doesn't
-  fail gracefully like a wrong method call does, it can fail the whole mod's load. The one
-  exception, added in 1.6.0: `BlockOcclusionMixin` targets `Block.shouldRenderFace` to fix
-  Xray's texture pack not revealing fully-buried ores — face culling is decided by the adjacent
-  block's real, server-shared shape, which a resource pack cannot override no matter what
-  geometry it uses, so there was no non-Mixin way to fix it. It's registered `"required": false`
-  in `moveclient.mixins.json` specifically so a future-version target mismatch degrades to a
-  logged warning instead of failing the whole mod's load — keep that pattern for any *new*
-  Mixin this project adds. If another feature seems to need a Mixin (true see-through-wall
-  ESP beyond occlusion, spoofing outgoing movement packets for NoFall on a remote server,
-  intercepting incoming knockback packets for a truly zero-tolerance Anti-Knockback), that
-  remains a deliberate scope boundary, documented in the relevant module's class doc — not a
-  TODO — unless you're prepared to verify the target as rigorously as `shouldRenderFace` was
-  verified here (real bytecode inspection, not a remembered method name).
+  fail gracefully like a wrong method call does, it can fail the whole mod's load. Exception 1,
+  added in 1.6.0: `BlockOcclusionMixin` targets `Block.shouldRenderFace` to fix Xray's texture
+  pack not revealing fully-buried ores — face culling is decided by the adjacent block's real,
+  server-shared shape, which a resource pack cannot override no matter what geometry it uses, so
+  there was no non-Mixin way to fix it. Exception 2, added in 1.7.0: `XrayAllowlistModelMixin`
+  targets `BlockModelResolver.update` (this build's renamed per-blockstate model resolution entry
+  point) to back Xray's "Allowlist Mode" — hides every non-ore block by redirecting its model to
+  vanilla's own `EmptyBlockModel.INSTANCE`, since a resource pack can't scale to enumerating every
+  non-ore block in the game as individual model files the way the 1.5.0 denylist pack does for
+  ~30 common terrain blocks. `BlockOcclusionMixin` was generalized at the same time to also cover
+  Allowlist Mode's face-culling case. Both are registered `"required": false` in
+  `moveclient.mixins.json` specifically so a future-version target mismatch degrades to a logged
+  warning instead of failing the whole mod's load — keep that pattern for any *new* Mixin this
+  project adds. If another feature seems to need a Mixin (true see-through-wall ESP beyond
+  occlusion, spoofing outgoing movement packets for NoFall on a remote server, intercepting
+  incoming knockback packets for a truly zero-tolerance Anti-Knockback), that remains a deliberate
+  scope boundary, documented in the relevant module's class doc — not a TODO — unless you're
+  prepared to verify the target as rigorously as `shouldRenderFace`/`BlockModelResolver.update`
+  were verified here (real bytecode inspection via `javap` against the real jar, not a remembered
+  method name).
 - `NoFallModule` only prevents damage authoritatively in singleplayer/LAN (resets the integrated
   server's copy of the player's fall distance via `MinecraftServer#execute`); against a remote
   dedicated server it only suppresses the client-side prediction.

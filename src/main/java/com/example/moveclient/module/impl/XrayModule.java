@@ -46,10 +46,28 @@ import java.util.List;
  *    rendering-API churn at all. Enabling/disabling this module adds/removes the pack from the
  *    active {@link PackRepository} selection and triggers a resource reload (the same "Reloading
  *    resources..." flash as toggling a pack by hand in the Options menu).
+ *
+ * Two further, independently-toggleable settings build on (2):
+ *
+ * 3. "Allowlist Mode" flips the hide logic around: instead of denylisting ~30 specific common
+ *    terrain blocks, it hides every block that ISN'T an ore. A resource pack can't scale to
+ *    "every non-ore block in the game" as individual model files, so this is done with a Mixin
+ *    instead ({@code XrayAllowlistModelMixin}, injecting into {@code BlockModelResolver.update} -
+ *    this build's renamed/restructured per-blockstate model resolution entry point - and
+ *    redirecting non-ore blocks to vanilla's own {@code EmptyBlockModel.INSTANCE}). Needs the
+ *    same face-culling fix as (2), generalized in {@code BlockOcclusionMixin} to "any adjacent
+ *    block not in the ore allowlist" rather than one fixed covered-block set.
+ * 4. "Fullbright Ores" makes ore blocks themselves glow: a third builtin pack
+ *    (`resourcepacks/xray_ores/`) overrides each ore block with its normal full-cube geometry
+ *    plus {@code light_emission: 15} and {@code ambientocclusion: false}, so they emit full
+ *    brightness and stand out clearly whether or not a hide mode is also active. Kept as its own
+ *    pack (not merged into (2)'s) so it can be toggled independently of which hide mode, if any,
+ *    is in use.
  */
 public class XrayModule extends Module {
 
     private static final String TEXTURE_PACK_ID = "moveclient:xray";
+    private static final String FULLBRIGHT_PACK_ID = "moveclient:xray_ores";
 
     public record OreHit(BlockPos pos, Block block) {
     }
@@ -60,6 +78,8 @@ public class XrayModule extends Module {
     private final Setting.BooleanSetting includeGold;
     private final Setting.BooleanSetting includeCommonOres;
     private final Setting.BooleanSetting texturePack;
+    private final Setting.BooleanSetting allowlistMode;
+    private final Setting.BooleanSetting fullbrightOres;
 
     private final List<OreHit> nearestOres = new ArrayList<>();
     private int ticksUntilScan;
@@ -72,11 +92,15 @@ public class XrayModule extends Module {
         includeGold = registerBoolean("Include Gold", true);
         includeCommonOres = registerBoolean("Include Iron/Redstone/Lapis/Copper", false);
         texturePack = registerBoolean("Texture Pack", true);
+        allowlistMode = registerBoolean("Allowlist Mode", false);
+        fullbrightOres = registerBoolean("Fullbright Ores", true);
     }
 
     @Override
     protected void onEnable() {
         setTexturePackEnabled(texturePack.get());
+        setAllowlistModeEnabled(allowlistMode.get());
+        setFullbrightOresEnabled(fullbrightOres.get());
     }
 
     @Override
@@ -84,6 +108,8 @@ public class XrayModule extends Module {
         nearestOres.clear();
         ticksUntilScan = 0;
         setTexturePackEnabled(false);
+        setAllowlistModeEnabled(false);
+        setFullbrightOresEnabled(false);
     }
 
     private void setTexturePackEnabled(boolean enabled) {
@@ -105,15 +131,53 @@ public class XrayModule extends Module {
         }
     }
 
+    /**
+     * Allowlist Mode: hides every block that isn't an ore (see {@code XrayAllowlistModelMixin}),
+     * rather than denylisting ~30 specific "common terrain" blocks like the pack above. Pure
+     * Mixin state, no resource pack involved - but already-built chunks won't reflect the new
+     * value until re-meshed, so this reuses {@code reloadResourcePacks()} anyway purely as the
+     * one mechanism already confirmed (via the denylist pack's own toggle, see the class doc's
+     * account of the "still weird" saga) to force a full chunk rebuild in this build's renderer.
+     */
+    private void setAllowlistModeEnabled(boolean enabled) {
+        if (XrayOcclusionState.isAllowlistActive() == enabled) {
+            return;
+        }
+        XrayOcclusionState.setAllowlistActive(enabled);
+        Minecraft.getInstance().reloadResourcePacks();
+    }
+
+    /**
+     * Fullbright Ores: swaps ore blocks to full-cube models with {@code light_emission: 15}
+     * (`resourcepacks/xray_ores/`) so they glow and stand out, whether or not a hide mode is also
+     * active. Kept as its own builtin pack, independent of {@code TEXTURE_PACK_ID}, so it can be
+     * toggled without pulling in (or requiring) the denylist pack's hide behavior.
+     */
+    private void setFullbrightOresEnabled(boolean enabled) {
+        Minecraft client = Minecraft.getInstance();
+        PackRepository repository = client.getResourcePackRepository();
+
+        boolean changed = enabled ? repository.addPack(FULLBRIGHT_PACK_ID) : repository.removePack(FULLBRIGHT_PACK_ID);
+        if (changed) {
+            client.reloadResourcePacks();
+        }
+    }
+
     @Override
     protected void onTick() {
-        // Reconciled every tick (cheap: a boolean compare and a Set#contains, only touching the
-        // pack repository on an actual mismatch) so toggling the "Texture Pack" setting from the
-        // GUI takes effect immediately, the same way the other live settings do, rather than only
-        // on the next full module enable/disable.
-        boolean packActive = Minecraft.getInstance().getResourcePackRepository().getSelectedIds().contains(TEXTURE_PACK_ID);
-        if (packActive != texturePack.get()) {
+        // Reconciled every tick (cheap: a boolean/Set#contains compare, only touching the pack
+        // repository or Mixin state on an actual mismatch) so toggling any of these settings from
+        // the GUI takes effect immediately, the same way the other live settings do, rather than
+        // only on the next full module enable/disable.
+        PackRepository repository = Minecraft.getInstance().getResourcePackRepository();
+        if (repository.getSelectedIds().contains(TEXTURE_PACK_ID) != texturePack.get()) {
             setTexturePackEnabled(texturePack.get());
+        }
+        if (XrayOcclusionState.isAllowlistActive() != allowlistMode.get()) {
+            setAllowlistModeEnabled(allowlistMode.get());
+        }
+        if (repository.getSelectedIds().contains(FULLBRIGHT_PACK_ID) != fullbrightOres.get()) {
+            setFullbrightOresEnabled(fullbrightOres.get());
         }
 
         if (ticksUntilScan > 0) {

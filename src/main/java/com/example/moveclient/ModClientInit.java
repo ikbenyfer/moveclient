@@ -35,9 +35,17 @@ public class ModClientInit implements ClientModInitializer {
         // resourcepacks/xray/. NORMAL activation means it's known to the pack repository but not
         // enabled by default; XrayModule enables/disables it itself via addPack/removePack + a
         // resource reload when the module is toggled.
-        FabricLoader.getInstance().getModContainer("moveclient").ifPresent(mod ->
-                ResourceLoader.registerBuiltinPack(
-                        Identifier.fromNamespaceAndPath("moveclient", "xray"), mod, PackActivationType.NORMAL));
+        FabricLoader.getInstance().getModContainer("moveclient").ifPresent(mod -> {
+            ResourceLoader.registerBuiltinPack(
+                    Identifier.fromNamespaceAndPath("moveclient", "xray"), mod, PackActivationType.NORMAL);
+
+            // Second, independently-toggleable pack: fullbright glow models for ore blocks only
+            // (resourcepacks/xray_ores/). Kept separate from the denylist pack above so "Fullbright
+            // Ores" can be turned on/off regardless of which hide mode (denylist or allowlist) is
+            // active, or with neither active at all.
+            ResourceLoader.registerBuiltinPack(
+                    Identifier.fromNamespaceAndPath("moveclient", "xray_ores"), mod, PackActivationType.NORMAL);
+        });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             keybindManager.onClientTick(client);

@@ -1,0 +1,12 @@
+{
+  "pack": {
+    "pack_format": 88,
+    "description": "MoveClient Xray: makes ore blocks emit full brightness so they glow and stand out, on top of whichever hide mode (denylist or allowlist) is active. Toggled automatically by the Xray module's Fullbright Ores setting.",
+    "supported_formats": {
+      "min_inclusive": 16,
+      "max_inclusive": 999
+    },
+    "min_format": [16, 0],
+    "max_format": [999, 0]
+  }
+}

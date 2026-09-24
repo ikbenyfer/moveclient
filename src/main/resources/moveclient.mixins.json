@@ -3,7 +3,8 @@
   "minVersion": "0.8",
   "package": "com.example.moveclient.mixin",
   "client": [
-    "BlockOcclusionMixin"
+    "BlockOcclusionMixin",
+    "XrayAllowlistModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

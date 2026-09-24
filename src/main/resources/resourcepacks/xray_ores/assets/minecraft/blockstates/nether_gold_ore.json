@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": [
+      { "model": "block/moveclient_xray_ore/nether_gold_ore" }
+    ]
+  }
+}

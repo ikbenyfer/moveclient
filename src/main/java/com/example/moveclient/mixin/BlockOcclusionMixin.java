@@ -21,10 +21,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * touching air/an already-exposed block — i.e. anything not already partially mined into — never
  * rendered no matter which of the three prior resource-pack-only Xray techniques was used.
  *
- * Deliberately narrow: only intercepts the decision when Xray's texture pack is actually active
- * ({@link XrayOcclusionState#isActive()}) and only when the specific *adjacent* block is one of
- * the covered set, so this has zero effect on anything else — including all normal rendering
- * whenever the module is off. Registered with {@code "required": false} in
+ * Also covers Allowlist Mode ({@link XrayOcclusionState#isAllowlistActive()}): the same face-
+ * culling problem applies there too, just against a much larger set of adjacent blocks (anything
+ * that isn't an ore, rather than one fixed "common terrain" list) — see
+ * {@code XrayAllowlistModelMixin}, which hides those blocks' geometry itself but can't fix the
+ * mesh-building decision for a *neighboring* ore block's faces.
+ *
+ * Deliberately narrow: only intercepts the decision when one of Xray's hide modes is actually
+ * active and only when the specific *adjacent* block is one that mode hides, so this has zero
+ * effect on anything else — including all normal rendering whenever the module is off. Registered
+ * with {@code "required": false} in
  * {@code moveclient.mixins.json}: if this mixin fails to find its target on some future game
  * version, Fabric logs a warning and the rest of the mod still loads, instead of the whole mod
  * failing to start.
@@ -36,6 +42,10 @@ public abstract class BlockOcclusionMixin {
     private static void moveclient$alwaysRenderAgainstCoveredBlocks(
             BlockState state, BlockState adjacentState, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (XrayOcclusionState.isActive() && XrayOcclusionState.COVERED_BLOCKS.contains(adjacentState.getBlock())) {
+            cir.setReturnValue(true);
+            return;
+        }
+        if (XrayOcclusionState.isAllowlistActive() && !XrayOcclusionState.ORE_BLOCKS.contains(adjacentState.getBlock())) {
             cir.setReturnValue(true);
         }
     }

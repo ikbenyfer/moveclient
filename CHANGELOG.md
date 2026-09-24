@@ -2,6 +2,30 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.7.0] — Xray: Allowlist Mode and Fullbright Ores
+
+- **Added — Allowlist Mode**: a new setting that flips the hide logic around. Instead of
+  denylisting ~30 specific common terrain blocks (the existing Texture Pack setting), Allowlist
+  Mode hides *every* block that isn't an ore. A resource pack can't scale to enumerating hundreds
+  of non-ore blocks as individual model files, so this is done with a new Mixin instead
+  (`XrayAllowlistModelMixin`, targeting `BlockModelResolver.update` — this build's renamed
+  per-blockstate model resolution entry point, verified via `javap` against the real jar since no
+  class named `BlockRenderDispatcher` exists here) that redirects any non-ore block's resolved
+  model to vanilla's own `EmptyBlockModel.INSTANCE`. `BlockOcclusionMixin` (from 1.6.0) was
+  generalized to also fix face-culling for this mode, so fully-buried ores are visible here too,
+  not just already-exposed ones.
+- **Added — Fullbright Ores**: a new setting (on by default) that makes ore blocks themselves
+  glow. A third builtin resource pack (`resourcepacks/xray_ores/`) overrides each of the 19 ore
+  blocks with its normal full-cube geometry plus `light_emission: 15` and
+  `ambientocclusion: false`, so they emit full brightness and stand out clearly — independent of,
+  and combinable with, either hide mode above (or neither).
+- Both settings are reconciled live in `onTick()`, the same as the existing Texture Pack setting,
+  so toggling them from the GUI takes effect immediately without needing to re-toggle the module.
+- Neither the resource-pack toggle nor the new Mixin's pure state flip force affected chunks to
+  re-render on their own; both reuse `Minecraft#reloadResourcePacks()` purely as the one mechanism
+  already confirmed (via 1.5.0's denylist pack) to force a full chunk rebuild in this build's
+  renderer, regardless of whether an actual resource changed.
+
 ## [1.6.0] — Xray: fixed fully-buried ores with a Mixin
 
 - **Root cause found**: the 1.5.4 diagnostic confirmed the resource pack itself was always

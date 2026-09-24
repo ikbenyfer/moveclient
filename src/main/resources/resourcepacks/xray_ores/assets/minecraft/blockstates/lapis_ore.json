@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": [
+      { "model": "block/moveclient_xray_ore/lapis_ore" }
+    ]
+  }
+}
