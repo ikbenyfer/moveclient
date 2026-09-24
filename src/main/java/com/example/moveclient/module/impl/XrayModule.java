@@ -88,7 +88,22 @@ public class XrayModule extends Module {
     private void setTexturePackEnabled(boolean enabled) {
         Minecraft client = Minecraft.getInstance();
         PackRepository repository = client.getResourcePackRepository();
+
+        // Diagnostic, left in deliberately: three different geometry techniques in a row
+        // produced the identical "weird" complaint, which is exactly what you'd see if this
+        // pack were never actually being selected/reloaded at all (i.e. the visual stayed
+        // stock vanilla every time, regardless of what the pack's own content was). This message
+        // reports the repository's ground truth directly, so that question can be answered from
+        // one screenshot instead of another guess.
+        boolean availableBefore = repository.isAvailable(TEXTURE_PACK_ID);
         boolean changed = enabled ? repository.addPack(TEXTURE_PACK_ID) : repository.removePack(TEXTURE_PACK_ID);
+        boolean selectedAfter = repository.getSelectedIds().contains(TEXTURE_PACK_ID);
+        String diagnostic = "[Xray] available=" + availableBefore + " changed=" + changed + " nowSelected=" + selectedAfter;
+        System.out.println(diagnostic);
+        if (client.player != null) {
+            client.player.sendSystemMessage(net.minecraft.network.chat.Component.literal(diagnostic));
+        }
+
         if (changed) {
             client.reloadResourcePacks();
         }

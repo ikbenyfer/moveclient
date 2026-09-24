@@ -2,6 +2,18 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.5.4] — Xray: diagnostic logging (stop guessing, start verifying)
+
+- **Added**: three different geometry techniques in a row (transparent texture, thin shell, fully
+  invisible) produced the identical "weird" report — which is also exactly what you'd see if the
+  pack were never actually being selected/reloaded at all, regardless of what was in it. Rather
+  than change the pack's content again without evidence, toggling Xray now prints a diagnostic
+  line to chat and the log: `[Xray] available=... changed=... nowSelected=...`, reporting the
+  resource pack repository's actual state directly. `available=false` would mean the builtin
+  pack registration itself never worked; `changed=false`/`nowSelected=false` after enabling would
+  mean the toggle call isn't doing anything. This turns "still weird" into an answerable
+  question instead of another guess.
+
 ## [1.5.3] — Xray: switched to fully-invisible blocks
 
 - **Changed**: after fixing 1.5.2's particle bug, the thin-shell geometry itself still looked
