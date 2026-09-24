@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/moveclient_xray/shell",
+  "textures": {
+    "all": "minecraft:block/cobblestone"
+  }
+}

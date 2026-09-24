@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "snowy=false": [ { "model": "block/moveclient_xray/grass_block" } ],
+    "snowy=true": [ { "model": "block/moveclient_xray/grass_block" } ]
+  }
+}

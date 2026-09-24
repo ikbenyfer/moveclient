@@ -2,6 +2,21 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.5.1] — Xray rebuilt with the thin-shell model technique
+
+- **Fixed**: 1.5.0's flat-transparent-texture approach looked "weird" in practice — ores only
+  visible very close, caves only visible very far. Rebuilt using a proper block-model technique
+  instead: each covered block is replaced with a custom model that shrinks it to a thin (0.5/16)
+  shell on each face, forced to full brightness (`light_emission: 15`,
+  `ambientocclusion: false`), with normal `cullface` behavior so two adjacent shell blocks still
+  hide their shared face — a solid mass of stone reads as empty, and only faces exposed to air
+  (cave walls, ore veins) show as thin bright outlines. No custom textures needed; models
+  reference vanilla's own existing block textures.
+- Ore blocks are left with no override at all and render completely normally.
+- The technique (and the `pack.mcmeta` `min_format`/`max_format`/`supported_formats` structure)
+  was verified against a working third-party x-ray pack's file structure, then reimplemented
+  from scratch with this mod's own files — the original pack had no license and wasn't bundled.
+
 ## [1.5.0] — Xray now applies a real see-through texture pack
 
 - **Added**: Xray now bundles and auto-applies an actual resource pack (`resourcepacks/xray/`,

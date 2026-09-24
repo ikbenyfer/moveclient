@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": [
+      { "model": "block/moveclient_xray/sandstone" }
+    ]
+  }
+}

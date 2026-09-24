@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=x": [ { "model": "block/moveclient_xray/deepslate" } ],
+    "axis=y": [ { "model": "block/moveclient_xray/deepslate" } ],
+    "axis=z": [ { "model": "block/moveclient_xray/deepslate" } ]
+  }
+}
