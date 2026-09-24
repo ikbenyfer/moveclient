@@ -1,5 +1,6 @@
 package com.example.moveclient.module.impl;
 
+import com.example.moveclient.mixin.XrayOcclusionState;
 import com.example.moveclient.module.Module;
 import com.example.moveclient.module.ModuleCategory;
 import com.example.moveclient.module.Setting;
@@ -89,20 +90,15 @@ public class XrayModule extends Module {
         Minecraft client = Minecraft.getInstance();
         PackRepository repository = client.getResourcePackRepository();
 
-        // Diagnostic, left in deliberately: three different geometry techniques in a row
-        // produced the identical "weird" complaint, which is exactly what you'd see if this
-        // pack were never actually being selected/reloaded at all (i.e. the visual stayed
-        // stock vanilla every time, regardless of what the pack's own content was). This message
-        // reports the repository's ground truth directly, so that question can be answered from
-        // one screenshot instead of another guess.
-        boolean availableBefore = repository.isAvailable(TEXTURE_PACK_ID);
         boolean changed = enabled ? repository.addPack(TEXTURE_PACK_ID) : repository.removePack(TEXTURE_PACK_ID);
         boolean selectedAfter = repository.getSelectedIds().contains(TEXTURE_PACK_ID);
-        String diagnostic = "[Xray] available=" + availableBefore + " changed=" + changed + " nowSelected=" + selectedAfter;
-        System.out.println(diagnostic);
-        if (client.player != null) {
-            client.player.sendSystemMessage(net.minecraft.network.chat.Component.literal(diagnostic));
-        }
+        // Confirmed via an earlier diagnostic build that the pack itself was always being
+        // selected/reloaded correctly (it really was becoming invisible/transparent) - the
+        // remaining "still weird" report was fully-buried ore veins never rendering at all, a
+        // face-culling issue this state flag lets BlockOcclusionMixin fix. Kept in sync with the
+        // repository's actual state, not just the requested one, so a failed addPack/removePack
+        // can't leave the mixin thinking Xray is active when the pack isn't really selected.
+        XrayOcclusionState.setActive(selectedAfter);
 
         if (changed) {
             client.reloadResourcePacks();

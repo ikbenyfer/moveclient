@@ -2,6 +2,25 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.6.0] — Xray: fixed fully-buried ores with a Mixin
+
+- **Root cause found**: the 1.5.4 diagnostic confirmed the resource pack itself was always
+  working correctly (covered blocks really were invisible). The remaining "still weird" report
+  — ores near already-exposed air/tunnels visible, fully-buried ore veins never rendering at
+  all — turned out to be `Block.shouldRenderFace(state, adjacentState, direction)`: whether a
+  face is even added to the chunk mesh is decided by the *adjacent* block's real, server-shared
+  shape, completely independent of what its resource-pack model visually shows. A resource pack
+  alone cannot change this — confirmed by checking the method's actual bytecode.
+- **Added**: a Mixin (`BlockOcclusionMixin`, targeting `Block.shouldRenderFace`) that forces a
+  face to render whenever the adjacent block is one of Xray's covered blocks and the texture
+  pack is currently active. Deliberately narrow — zero effect on anything else, and zero effect
+  at all whenever Xray's texture pack is off. Registered with `"required": false`: if this
+  mixin's target ever doesn't match on some future build, Fabric logs a warning and the rest of
+  the mod still loads normally instead of failing to start entirely.
+- This is the first Mixin in this project. Every other module deliberately avoided Mixins all
+  version — this specific problem (face culling based on server-shared block shape) has no
+  other fix; a resource pack cannot override it, no matter which geometry technique is used.
+
 ## [1.5.4] — Xray: diagnostic logging (stop guessing, start verifying)
 
 - **Added**: three different geometry techniques in a row (transparent texture, thin shell, fully
