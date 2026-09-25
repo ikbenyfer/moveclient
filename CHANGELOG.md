@@ -2,6 +2,20 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.15.0] — Scaffold now uses the hotbar, not just your held item
+
+- **Changed**: Scaffold no longer requires a block already in your main hand. Your hand still
+  always takes priority - if it holds a block, that's what gets placed - but when it doesn't,
+  Scaffold now searches the hotbar (indices 0-8) for the first block it finds, briefly switches
+  the selected slot to it, places, then switches back.
+- The slot switch is sent to the server for real (`ServerboundSetCarriedItemPacket`, the same
+  packet vanilla sends when you scroll the hotbar or press a number key), not just applied
+  locally, since the server needs to agree on which item is selected to accept the placement -
+  this means a real, brief one-tick flicker of your held item, not an invisible swap.
+- Deliberately scoped to the hotbar only, not the full 36-slot inventory: a slot outside the
+  hotbar can't be "held" without first moving it there, which would mean rearranging your
+  inventory mid-walk - a meaningfully riskier operation than a plain slot switch.
+
 ## [1.14.0] — Fixed a crash: Xray Allowlist Mode
 
 - **Fixed**: turning on Xray's Allowlist Mode crashed the game on the very next block rendered,

@@ -6,7 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -20,12 +22,19 @@ import net.minecraft.world.level.block.state.BlockState;
  * but - as documented on {@code AirPlaceModule} - vanilla's own placement logic places directly at
  * the clicked position when it's air/replaceable rather than requiring a real neighbor at all.
  *
- * Deliberately only acts while your main hand already holds a {@link BlockItem} - it doesn't
- * silently switch your held hotbar slot to grab one, which would need verifying an additional,
- * separate slot-selection packet path. You just need a block selected while walking, the same way
- * you'd need one selected to place it by hand.
+ * Your main hand always takes priority: if it already holds a {@link BlockItem}, that's what gets
+ * placed. Only when it doesn't does this search the hotbar (indices 0-8, not the full 36-slot
+ * inventory - a slot outside the hotbar can't be "held" without first moving it there, which would
+ * mean rearranging your inventory mid-walk) for the first block it finds, briefly switching the
+ * selected slot to it, placing, then switching back. The slot switch is sent to the server for
+ * real ({@code ServerboundSetCarriedItemPacket}, the same packet vanilla sends when you scroll the
+ * hotbar or press a number key) rather than only updated locally, since the server needs to agree
+ * on which item is selected to accept the placement - so this does cause a brief, real one-tick
+ * flicker of your held item, not an invisible swap.
  */
 public class ScaffoldModule extends Module {
+
+    private static final int HOTBAR_SIZE = 9;
 
     public ScaffoldModule() {
         super("Scaffold", "Auto-places a block under your feet as you walk over air", ModuleCategory.MOVEMENT);
@@ -40,16 +49,40 @@ public class ScaffoldModule extends Module {
             return;
         }
 
-        if (!(player.getMainHandItem().getItem() instanceof BlockItem)) {
-            return;
-        }
-
         BlockPos below = BlockPos.containing(player.getX(), player.getY() - 0.1, player.getZ());
         BlockState stateBelow = level.getBlockState(below);
         if (!stateBelow.getCollisionShape(level, below).isEmpty()) {
             return; // already something solid to stand on
         }
 
+        if (player.getMainHandItem().getItem() instanceof BlockItem) {
+            AirPlaceModule.place(client, player, InteractionHand.MAIN_HAND, below);
+            return;
+        }
+
+        Inventory inventory = player.getInventory();
+        int hotbarBlockSlot = findHotbarBlockItem(inventory);
+        if (hotbarBlockSlot < 0) {
+            return;
+        }
+
+        int originalSlot = inventory.getSelectedSlot();
+        selectSlot(player, hotbarBlockSlot);
         AirPlaceModule.place(client, player, InteractionHand.MAIN_HAND, below);
+        selectSlot(player, originalSlot);
+    }
+
+    private static int findHotbarBlockItem(Inventory inventory) {
+        for (int i = 0; i < HOTBAR_SIZE; i++) {
+            if (inventory.getItem(i).getItem() instanceof BlockItem) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static void selectSlot(LocalPlayer player, int slot) {
+        player.getInventory().setSelectedSlot(slot);
+        player.connection.send(new ServerboundSetCarriedItemPacket(slot));
     }
 }
