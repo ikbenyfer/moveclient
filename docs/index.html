@@ -323,10 +323,10 @@
       <div class="hero-inner">
         <div class="eyebrow">Fabric · Minecraft 26.2 · Java 25</div>
         <h1>Move<span class="accent">Client</span></h1>
-        <p class="tagline">A client-side movement-mechanics test suite for a private, controlled world — 25 modules, a draggable ClickGUI, and JSON config, built and verified against the real 26.2 client.</p>
+        <p class="tagline">A client-side movement-mechanics test suite for a private, controlled world — 27 modules, a draggable ClickGUI, and JSON config, built and verified against the real 26.2 client.</p>
         <div class="cta-row">
-          <a class="btn-download" href="downloads/moveclient-1.10.0.jar" download>Download moveclient-1.10.0.jar</a>
-          <span class="btn-note">117 KB · v1.10.0</span>
+          <a class="btn-download" href="downloads/moveclient-1.11.0.jar" download>Download moveclient-1.11.0.jar</a>
+          <span class="btn-note">121 KB · v1.11.0</span>
           <a class="btn-secondary" href="https://github.com/ikbenyfer/moveclient">View source on GitHub</a>
         </div>
       </div>
@@ -343,7 +343,7 @@
   <section id="modules">
     <div class="section-head">
       <div class="kicker">What's inside</div>
-      <h2>25 modules across 3 categories</h2>
+      <h2>27 modules across 3 categories</h2>
       <p>Every module starts disabled, toggles from the ClickGUI or a bindable key, and persists its settings to a JSON config file.</p>
     </div>
 
@@ -367,7 +367,7 @@
     </div>
 
     <div class="category-block">
-      <div class="category-label">Player <span class="count">— 10</span></div>
+      <div class="category-label">Player <span class="count">— 12</span></div>
       <div class="module-grid">
         <div class="module-card"><h3>Anti-Knockback</h3><p>Cancels external velocity on both axes via a self-predicted baseline.</p></div>
         <div class="module-card"><h3>NoFall</h3><p>Prevents fall damage; resets server-side fall distance once per landing.</p></div>
@@ -376,6 +376,8 @@
         <div class="module-card"><h3>AutoArmor</h3><p>Auto-equips armor from your inventory into empty armor slots.</p></div>
         <div class="module-card"><h3>AutoRespawn</h3><p>Respawns the instant you die.</p></div>
         <div class="module-card"><h3>Reach</h3><p>Extends block and entity interaction range.</p></div>
+        <div class="module-card"><h3>MaceDamage</h3><p>Bonus attack damage while holding a Mace.</p></div>
+        <div class="module-card"><h3>ArrowDamage</h3><p>Overrides every arrow you fire to a fixed damage value.</p></div>
         <div class="module-card"><h3>Criticals</h3><p>Times a tiny hop so your own attacks land as critical hits.</p></div>
         <div class="module-card"><h3>Killaura</h3><p>Auto-attacks the nearest hostile mob — players are hard-excluded in code.</p></div>
         <div class="module-card"><h3>ClickAura</h3><p>Attacks the nearest entity you're looking at, but only on your own click — players are hard-excluded in code.</p></div>
@@ -397,15 +399,15 @@
       <h2>Installing the download</h2>
     </div>
     <ol class="steps">
-      <li><p>Click <b>Download</b> above — you get the real <code>moveclient-1.10.0.jar</code> directly, no rename step needed.</p></li>
+      <li><p>Click <b>Download</b> above — you get the real <code>moveclient-1.11.0.jar</code> directly, no rename step needed.</p></li>
       <li><p>Install <b>Fabric Loader ≥0.19.5</b> and <b>Fabric API 0.161.0+26.2</b> for Minecraft 26.2, if you haven't already.</p></li>
-      <li><p>Drop <code>moveclient-1.10.0.jar</code> into your <code>mods/</code> folder alongside Fabric API, then launch.</p></li>
+      <li><p>Drop <code>moveclient-1.11.0.jar</code> into your <code>mods/</code> folder alongside Fabric API, then launch.</p></li>
       <li><p>In-game, press <b>;</b> (semicolon) to open the ClickGUI.</p></li>
     </ol>
   </section>
 
   <footer>
-    <span>MoveClient v1.10.0 — built for a private/controlled test world.</span>
+    <span>MoveClient v1.11.0 — built for a private/controlled test world.</span>
     <span class="scope-note">Client-side only, no server code or packet manipulation beyond documented vanilla client actions. Killaura and ClickAura are hard-scoped in code to never target players.</span>
   </footer>
 

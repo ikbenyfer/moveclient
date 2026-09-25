@@ -2,6 +2,7 @@ package com.example.moveclient.module;
 
 import com.example.moveclient.module.impl.AirJumpModule;
 import com.example.moveclient.module.impl.AntiKnockbackModule;
+import com.example.moveclient.module.impl.ArrowDamageModule;
 import com.example.moveclient.module.impl.AutoArmorModule;
 import com.example.moveclient.module.impl.AutoRespawnModule;
 import com.example.moveclient.module.impl.AutoSprintModule;
@@ -16,6 +17,7 @@ import com.example.moveclient.module.impl.GravityModule;
 import com.example.moveclient.module.impl.HighJumpModule;
 import com.example.moveclient.module.impl.JesusModule;
 import com.example.moveclient.module.impl.KillauraModule;
+import com.example.moveclient.module.impl.MaceDamageModule;
 import com.example.moveclient.module.impl.NoClipModule;
 import com.example.moveclient.module.impl.NoFallModule;
 import com.example.moveclient.module.impl.ReachModule;
@@ -59,6 +61,8 @@ public final class ModuleManager {
         register(new AutoArmorModule());
         register(new AutoRespawnModule());
         register(new ReachModule());
+        register(new MaceDamageModule());
+        register(new ArrowDamageModule());
         register(new XrayModule());
         register(new BrightnessModule());
         register(new CriticalsModule());

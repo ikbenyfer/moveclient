@@ -2,6 +2,30 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.11.0] — MaceDamage and ArrowDamage
+
+- **Added — MaceDamage**: bonus attack damage while your main hand holds a Mace, via a reversible
+  `ADD_VALUE` modifier on `Attributes.ATTACK_DAMAGE`.
+- **Added — ArrowDamage**: overrides the damage of every arrow you personally fire to a fixed
+  value, instead of vanilla's own draw-charge/Power-enchantment-scaled damage. `AbstractArrow`
+  only exposes `setBaseDamage(double)`, not a getter for what vanilla already computed for a given
+  shot, so this overwrites rather than adds a bonus on top — every fired arrow deals exactly the
+  configured amount, full stop.
+- **Important, and different from every other combat/movement module so far**: actual dealt damage
+  is resolved *server-side*, unlike Speed/HighJump/Gravity/Reach's purely client-simulated physics
+  (which the client just reports to the server). A client-only attribute modifier would only
+  change what the client predicts/shows in a tooltip, never what's really dealt. Both modules
+  therefore also reach into the integrated singleplayer/LAN server's own authoritative
+  `ServerPlayer` copy (`Minecraft#getSingleplayerServer` + `MinecraftServer#execute`, the same
+  technique NoFall already uses for its fall-distance reset) — that's what makes the damage
+  genuinely real, not just displayed. Against a remote dedicated server, MaceDamage falls back to
+  affecting only the client-side prediction, and ArrowDamage has no effect at all, since it never
+  touches anything client-side to begin with.
+- Along the way: confirmed `AbstractArrow` moved packages in this build (now
+  `net.minecraft.world.entity.projectile.arrow.AbstractArrow`), and that vanilla has no
+  ranged/projectile-damage attribute at all — arrow damage has always lived on the arrow entity
+  itself, not the shooter.
+
 ## [1.10.0] — Five more modules: Reach, AutoArmor, AutoRespawn, Sneak, Brightness
 
 - **Added — Reach**: extends block and entity interaction range via reversible `ADD_VALUE`
