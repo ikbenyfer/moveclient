@@ -1,4 +1,4 @@
-package com.example.moveclient.mixin;
+package com.example.moveclient.xray;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -6,9 +6,19 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Set;
 
 /**
- * Shared state read by {@link BlockOcclusionMixin}, kept in its own tiny class (rather than a
- * static field on {@code XrayModule}) so the mixin's dependency surface is as small as possible.
- * The block set here must match the block list overridden in {@code resourcepacks/xray/}.
+ * Shared state read by {@code BlockOcclusionMixin}/{@code XrayAllowlistModelMixin}, kept in its
+ * own tiny class (rather than a static field on {@code XrayModule}) so the mixins' dependency
+ * surface is as small as possible. The block set here must match the block list overridden in
+ * {@code resourcepacks/xray/}.
+ *
+ * Deliberately lives OUTSIDE {@code com.example.moveclient.mixin} even though it's read by the
+ * mixins there: Fabric's Mixin transformer treats every class in the package
+ * {@code moveclient.mixins.json} declares as its {@code "package"} as mixin-owned, and throws
+ * {@code IllegalClassLoadError} ("... cannot be referenced directly") the moment any code tries
+ * to load a non-mixin class from that same package - which is exactly what happened here the one
+ * time this class briefly lived in {@code com.example.moveclient.mixin}: Allowlist Mode crashed
+ * the game on the very next block rendered, confirmed via a real crash log
+ * ("Mixin transformation of com.example.moveclient.mixin.XrayOcclusionState failed").
  */
 public final class XrayOcclusionState {
 

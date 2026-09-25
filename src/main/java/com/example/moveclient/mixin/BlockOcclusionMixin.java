@@ -1,5 +1,6 @@
 package com.example.moveclient.mixin;
 
+import com.example.moveclient.xray.XrayOcclusionState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;

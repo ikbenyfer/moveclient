@@ -169,6 +169,16 @@ GPU/driver (the report that surfaced this had AMD driver info in the crash log).
   prepared to verify the target as rigorously as `shouldRenderFace`/`BlockModelResolver.update`
   were verified here (real bytecode inspection via `javap` against the real jar, not a remembered
   method name).
+- **A plain (non-`@Mixin`) class must never live in the package a `mixins.json` declares as
+  `"package"`.** `XrayOcclusionState` briefly lived in `com.example.moveclient.mixin` alongside
+  the two real mixins, since it's only ever read by them. That crashed the game the instant
+  Allowlist Mode rendered its first block: Fabric's Mixin transformer treats *every* class in that
+  declared package as mixin-owned, and throws `IllegalClassLoadError` ("... cannot be referenced
+  directly") the moment anything tries to load a non-mixin class from it — confirmed from a real
+  crash log (`Mixin transformation of com.example.moveclient.mixin.XrayOcclusionState failed`).
+  Fixed in 1.14.0 by moving it to `com.example.moveclient.xray`. Any future shared state a Mixin
+  needs to read belongs in a sibling package, never inside the mixin package itself, no matter how
+  small or tightly coupled to the mixin it is.
 - `NoFallModule` only prevents damage authoritatively in singleplayer/LAN (resets the integrated
   server's copy of the player's fall distance via `MinecraftServer#execute`); against a remote
   dedicated server it only suppresses the client-side prediction.

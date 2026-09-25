@@ -1,5 +1,6 @@
 package com.example.moveclient.mixin;
 
+import com.example.moveclient.xray.XrayOcclusionState;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;

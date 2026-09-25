@@ -1,9 +1,9 @@
 package com.example.moveclient.module.impl;
 
-import com.example.moveclient.mixin.XrayOcclusionState;
 import com.example.moveclient.module.Module;
 import com.example.moveclient.module.ModuleCategory;
 import com.example.moveclient.module.Setting;
+import com.example.moveclient.xray.XrayOcclusionState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;

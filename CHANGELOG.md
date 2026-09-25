@@ -2,6 +2,32 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.14.0] — Fixed a crash: Xray Allowlist Mode
+
+- **Fixed**: turning on Xray's Allowlist Mode crashed the game on the very next block rendered,
+  confirmed via a real user-supplied crash log:
+  `Mixin transformation of com.example.moveclient.mixin.XrayOcclusionState failed` →
+  `IllegalClassLoadError: com.example.moveclient.mixin.XrayOcclusionState is in a defined mixin
+  package com.example.moveclient.mixin.* owned by moveclient.mixins.json and cannot be referenced
+  directly`.
+- **Root cause**: `XrayOcclusionState` (a plain state-holder, not itself a `@Mixin` class) lived
+  in `com.example.moveclient.mixin` — the same package `moveclient.mixins.json` declares as its
+  `"package"`. Fabric's Mixin transformer treats *every* class in that declared package as
+  mixin-owned, and refuses to let already-transformed code load a non-mixin class from it
+  directly. `XrayAllowlistModelMixin`'s injected code referencing `XrayOcclusionState` at runtime
+  hit this immediately, the first time it ran (i.e. the first block rendered with Allowlist Mode
+  on) — so Allowlist Mode was completely unusable, not just buggy in some edge case.
+- **Fix**: moved `XrayOcclusionState` to its own package, `com.example.moveclient.xray`, outside
+  the mixin package entirely. `BlockOcclusionMixin`, `XrayAllowlistModelMixin`, and `XrayModule`
+  updated to import it from there. No behavior change otherwise.
+- This crash's stack trace was previously mistaken (across a couple of exchanges) for a separate,
+  unrelated `"Scissor size must be >0"` crash the user had also hit — that one's cause is still
+  unconfirmed (audited every `enableScissor` call this build's own `GuiGraphicsExtractor`,
+  `Button`, `EditBox`, `AbstractSliderButton`, and `Screen` make; none of MoveClient's own render
+  code or the vanilla widgets it uses reach one), and doesn't appear in the full log that surfaced
+  *this* bug. If it recurs, a full `mclo.gs`-style log from that specific session is what's needed
+  to actually pin it down, the same way this one was found.
+
 ## [1.13.0] — AirPlace and Scaffold
 
 - **Added — AirPlace**: places blocks even when nothing is in range to click against. Vanilla's own
