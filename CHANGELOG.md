@@ -2,6 +2,31 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.10.0] — Five more modules: Reach, AutoArmor, AutoRespawn, Sneak, Brightness
+
+- **Added — Reach**: extends block and entity interaction range via reversible `ADD_VALUE`
+  attribute modifiers on `Attributes.BLOCK_INTERACTION_RANGE` / `ENTITY_INTERACTION_RANGE` — real
+  vanilla-native attributes the game's own interaction checks read, same pattern as Speed's
+  movement-speed modifier. Settings: Block Reach Bonus, Entity Reach Bonus.
+- **Added — AutoArmor**: equips any armor piece sitting unequipped in your hotbar/inventory into
+  its matching empty armor slot, via `ContainerInput.QUICK_MOVE` (the same click type a real
+  shift-click sends), letting vanilla's own container logic route it to the right slot instead of
+  computing a target index. An item's armor slot is read from its `DataComponents.EQUIPPABLE`
+  component — this build has no `ArmorItem` class at all anymore (verified: not present in the
+  jar), so the old `instanceof ArmorItem` check this feature would once have used wouldn't even
+  compile here.
+- **Added — AutoRespawn**: respawns the instant you die, sending the same
+  `ServerboundClientCommandPacket(Action.PERFORM_RESPAWN)` vanilla's own death-screen button sends.
+  Edge-detected on `isDeadOrDying()` so it fires once per death, not every tick while dead.
+- **Added — Sneak**: forces continuous sneaking via the same `shiftKeyDown` flag vanilla sets while
+  you hold the real key, without needing to hold it yourself.
+- **Added — Brightness**: locks gamma to vanilla's true maximum (1.0) while enabled. Deliberately
+  doesn't attempt a "see in the dark" fullbright beyond that: `OptionInstance.set` routes through
+  `OptionInstance$UnitDouble.validateValue`, which silently rejects anything outside 0.0-1.0 —
+  confirmed via this build's actual bytecode. Pushing past vanilla's own range would need a Mixin
+  bypassing that validation entirely, which this module deliberately doesn't attempt; it's
+  vanilla's own legitimate maximum, just applied automatically.
+
 ## [1.9.0] — Teleport
 
 - **Added**: Teleport — teleports you to wherever you're currently looking, up to a configurable
