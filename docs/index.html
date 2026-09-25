@@ -323,7 +323,7 @@
       <div class="hero-inner">
         <div class="eyebrow">Fabric · Minecraft 26.2 · Java 25</div>
         <h1>Move<span class="accent">Client</span></h1>
-        <p class="tagline">A client-side movement-mechanics test suite for a private, controlled world — 18 modules, a draggable ClickGUI, and JSON config, built and verified against the real 26.2 client.</p>
+        <p class="tagline">A client-side movement-mechanics test suite for a private, controlled world — 19 modules, a draggable ClickGUI, and JSON config, built and verified against the real 26.2 client.</p>
         <div class="cta-row">
           <a class="btn-download" href="downloads/moveclient-1.8.0.jar" download>Download moveclient-1.8.0.jar</a>
           <span class="btn-note">109 KB · v1.8.0</span>
@@ -343,7 +343,7 @@
   <section id="modules">
     <div class="section-head">
       <div class="kicker">What's inside</div>
-      <h2>18 modules across 3 categories</h2>
+      <h2>19 modules across 3 categories</h2>
       <p>Every module starts disabled, toggles from the ClickGUI or a bindable key, and persists its settings to a JSON config file.</p>
     </div>
 
@@ -365,7 +365,7 @@
     </div>
 
     <div class="category-block">
-      <div class="category-label">Player <span class="count">— 6</span></div>
+      <div class="category-label">Player <span class="count">— 7</span></div>
       <div class="module-grid">
         <div class="module-card"><h3>Anti-Knockback</h3><p>Cancels external velocity on both axes via a self-predicted baseline.</p></div>
         <div class="module-card"><h3>NoFall</h3><p>Prevents fall damage; resets server-side fall distance once per landing.</p></div>
@@ -373,13 +373,14 @@
         <div class="module-card"><h3>AutoTotem</h3><p>Swaps a totem from anywhere in your inventory into offhand at low HP.</p></div>
         <div class="module-card"><h3>Criticals</h3><p>Times a tiny hop so your own attacks land as critical hits.</p></div>
         <div class="module-card"><h3>Killaura</h3><p>Auto-attacks the nearest hostile mob — players are hard-excluded in code.</p></div>
+        <div class="module-card"><h3>ClickAura</h3><p>Attacks the nearest entity you're looking at, but only on your own click — players are hard-excluded in code.</p></div>
       </div>
     </div>
 
     <div class="category-block">
       <div class="category-label">World <span class="count">— 1</span></div>
       <div class="module-grid">
-        <div class="module-card"><h3>Xray</h3><p>Lists nearby valuable ores through walls, with direction and distance.</p></div>
+        <div class="module-card"><h3>Xray</h3><p>Lists nearby ores through walls, plus a denylist texture pack, an allowlist "hide everything but ores" mode, and fullbright glowing ores.</p></div>
       </div>
     </div>
   </section>
@@ -399,7 +400,7 @@
 
   <footer>
     <span>MoveClient v1.8.0 — built for a private/controlled test world.</span>
-    <span class="scope-note">Client-side only, no server code or packet manipulation beyond documented vanilla client actions. Killaura is hard-scoped in code to never target players.</span>
+    <span class="scope-note">Client-side only, no server code or packet manipulation beyond documented vanilla client actions. Killaura and ClickAura are hard-scoped in code to never target players.</span>
   </footer>
 
 </div>
