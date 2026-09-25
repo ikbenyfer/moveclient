@@ -2,6 +2,24 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.13.0] — AirPlace and Scaffold
+
+- **Added — AirPlace**: places blocks even when nothing is in range to click against. Vanilla's own
+  placement logic doesn't actually require the clicked position to contain a real block: when it's
+  air (replaceable), the new block is placed directly there instead of offset by a clicked face's
+  direction. This module builds its own synthetic `BlockHitResult` targeting empty air along your
+  look direction (verified against `MultiPlayerGameMode#useItemOn`'s real signature, which takes
+  any `BlockHitResult` - it doesn't have to come from a real raycast hit) instead of relying on
+  `Minecraft#hitResult`, which is only ever a real `BLOCK` hit when you're already looking at one.
+  Only activates when vanilla's own crosshair target isn't already a real block, so normal
+  placement against real blocks is untouched.
+- **Added — Scaffold**: automatically places a block directly beneath your feet each tick when
+  there's nothing solid there, so walking over open air bridges it as you go. Reuses AirPlace's
+  same synthetic-hit-result placement technique, targeting the position below the player instead
+  of one along the look ray. Only acts while your main hand already holds a block - it doesn't
+  silently switch your held hotbar slot.
+- Settings: AirPlace has a Range setting; Scaffold has none (always targets directly underfoot).
+
 ## [1.12.0] — Five purely client-side info/HUD modules
 
 Unlike MaceDamage/ArrowDamage, every one of these is entirely client-side rendering or local input
