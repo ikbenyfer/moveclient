@@ -5,6 +5,7 @@ import com.example.moveclient.module.impl.AntiKnockbackModule;
 import com.example.moveclient.module.impl.AutoSprintModule;
 import com.example.moveclient.module.impl.AutoTotemModule;
 import com.example.moveclient.module.impl.BhopModule;
+import com.example.moveclient.module.impl.ClickAuraModule;
 import com.example.moveclient.module.impl.CriticalsModule;
 import com.example.moveclient.module.impl.ElytraBoostModule;
 import com.example.moveclient.module.impl.FlightModule;
@@ -50,6 +51,7 @@ public final class ModuleManager {
         register(new XrayModule());
         register(new CriticalsModule());
         register(new KillauraModule());
+        register(new ClickAuraModule());
     }
 
     public static ModuleManager getInstance() {

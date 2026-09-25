@@ -2,6 +2,20 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.8.0] — ClickAura
+
+- **Added**: ClickAura — attacks the nearest entity you're looking at, but only on your own click.
+  Unlike Killaura (fully automatic, no aiming or clicking needed), this reacts to your actual
+  attack key press (read-only polling, same as Criticals) and only ever supplements a click
+  vanilla wouldn't already resolve to an entity itself (`Minecraft.crosshairPickEntity == null` -
+  your crosshair isn't precisely on a hitbox), picking the nearest living entity within a small
+  cone around your real look direction instead. Never double-hits: if vanilla already has a
+  crosshair target, this module does nothing that click.
+- `Player` is unconditionally excluded from targeting in code, not behind a setting — the same
+  hard rule `KillauraModule` enforces, for the same reason.
+- Settings: Range (max distance to consider) and Aim Assist Angle (the cone's half-angle in
+  degrees around your look direction).
+
 ## [1.7.0] — Xray: Allowlist Mode and Fullbright Ores
 
 - **Added — Allowlist Mode**: a new setting that flips the hide logic around. Instead of
