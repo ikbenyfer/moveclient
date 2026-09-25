@@ -18,6 +18,7 @@ import com.example.moveclient.module.impl.NoFallModule;
 import com.example.moveclient.module.impl.SpeedModule;
 import com.example.moveclient.module.impl.SpiderModule;
 import com.example.moveclient.module.impl.StepModule;
+import com.example.moveclient.module.impl.TeleportModule;
 import com.example.moveclient.module.impl.XrayModule;
 import net.minecraft.client.Minecraft;
 
@@ -44,6 +45,7 @@ public final class ModuleManager {
         register(new AirJumpModule());
         register(new NoClipModule());
         register(new ElytraBoostModule());
+        register(new TeleportModule());
         register(new AntiKnockbackModule());
         register(new NoFallModule());
         register(new JesusModule());

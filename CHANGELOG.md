@@ -2,6 +2,21 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.9.0] — Teleport
+
+- **Added**: Teleport — teleports you to wherever you're currently looking, up to a configurable
+  Max Range. A one-shot action bound like any other module key: pressing it performs the teleport
+  once and the module immediately turns itself back off, so every press teleports (unlike a normal
+  toggle, which would only fire on every *other* press).
+- Ray-marches your own look direction with `ClipContext`/`BlockGetter.clip` rather than using
+  vanilla's `Minecraft.hitResult` (capped to the short block-interaction reach distance, not useful
+  for teleporting any real distance). Stops at the first solid block and backs off slightly so you
+  land just in front of it; with a clear line of sight, you land at the full Max Range in open air.
+- Purely a client-side position set (`Entity#teleportTo`) — no server command, no special packet.
+  Like NoFall's server-side reset, this is only authoritative in singleplayer/LAN; a real remote
+  server's anti-cheat will very likely reject or snap back a jump this large. Doesn't check whether
+  the destination has room for the player.
+
 ## [1.8.0] — ClickAura
 
 - **Added**: ClickAura — attacks the nearest entity you're looking at, but only on your own click.
