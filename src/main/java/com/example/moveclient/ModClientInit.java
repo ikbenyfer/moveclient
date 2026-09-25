@@ -1,6 +1,9 @@
 package com.example.moveclient;
 
 import com.example.moveclient.config.ConfigManager;
+import com.example.moveclient.hud.ArmorStatusHud;
+import com.example.moveclient.hud.InfoHud;
+import com.example.moveclient.hud.KeystrokesHud;
 import com.example.moveclient.hud.ModuleHud;
 import com.example.moveclient.hud.XrayHud;
 import com.example.moveclient.module.ModuleManager;
@@ -24,6 +27,9 @@ public class ModClientInit implements ClientModInitializer {
     private final KeybindManager keybindManager = new KeybindManager();
     private final ModuleHud hud = new ModuleHud();
     private final XrayHud xrayHud = new XrayHud();
+    private final InfoHud infoHud = new InfoHud();
+    private final KeystrokesHud keystrokesHud = new KeystrokesHud();
+    private final ArmorStatusHud armorStatusHud = new ArmorStatusHud();
 
     @Override
     public void onInitializeClient() {
@@ -52,21 +58,20 @@ public class ModClientInit implements ClientModInitializer {
             ModuleManager.getInstance().tickAll(client);
         });
 
-        // Registered as a single HudElement rather than two separate ones: this is a defensive
-        // consolidation onto the one registration already confirmed to render (the module list),
-        // so Xray's HUD text can no longer be affected by anything specific to being its own,
-        // second HudElementRegistry entry. A failure inside xrayHud.render() is caught and logged
-        // instead of silently disappearing, in case that's what was happening.
+        // Registered as a single HudElement rather than several separate ones: this is a
+        // defensive consolidation onto the one registration already confirmed to render (the
+        // module list), so no HUD piece can be affected by anything specific to being its own,
+        // separate HudElementRegistry entry. Each additional renderer's call is individually
+        // wrapped in try/catch and logged instead of letting one broken renderer silently take
+        // down every other HUD element sharing this same registration.
         HudElementRegistry.addLast(
                 Identifier.fromNamespaceAndPath("moveclient", "hud"),
                 (graphics, deltaTracker) -> {
                     hud.render(graphics, deltaTracker);
-                    try {
-                        xrayHud.render(graphics, deltaTracker);
-                    } catch (RuntimeException e) {
-                        System.err.println("[moveclient] XrayHud.render threw:");
-                        e.printStackTrace();
-                    }
+                    renderSafely("XrayHud", () -> xrayHud.render(graphics, deltaTracker));
+                    renderSafely("InfoHud", () -> infoHud.render(graphics, deltaTracker));
+                    renderSafely("KeystrokesHud", () -> keystrokesHud.render(graphics, deltaTracker));
+                    renderSafely("ArmorStatusHud", () -> armorStatusHud.render(graphics, deltaTracker));
                 });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
@@ -79,5 +84,14 @@ public class ModClientInit implements ClientModInitializer {
             ModuleManager.getInstance().disableAll();
             ConfigManager.save();
         });
+    }
+
+    private static void renderSafely(String name, Runnable render) {
+        try {
+            render.run();
+        } catch (RuntimeException e) {
+            System.err.println("[moveclient] " + name + ".render threw:");
+            e.printStackTrace();
+        }
     }
 }

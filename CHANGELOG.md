@@ -2,6 +2,29 @@
 
 All notable changes to MoveClient, version by version.
 
+## [1.12.0] — Five purely client-side info/HUD modules
+
+Unlike MaceDamage/ArrowDamage, every one of these is entirely client-side rendering or local input
+reading — nothing they show or do depends on anything the server computes or agrees with, so they
+work identically on any server (or offline) without the singleplayer/LAN caveat.
+
+- **Added — Coordinates**: X/Y/Z + compass facing, bottom-left.
+- **Added — Velocity**: current horizontal/vertical speed in blocks/second (from
+  `player.getDeltaMovement()`), bottom-left.
+- **Added — CPS**: attack/use clicks in the last real second, bottom-left. Read-only `isDown()`
+  edge detection on a rolling one-second window of timestamps, same non-interfering approach
+  Criticals/ClickAura already use for their own key reads.
+- **Added — Keystrokes**: a classic WASD box grid, bottom-center, lit up per key's live state.
+- **Added — ArmorHUD**: your four worn armor pieces as item icons with vanilla's own durability
+  bar/stack-count overlay (`GuiGraphicsExtractor#itemDecorations`), bottom-right.
+- Coordinates/Velocity/CPS share one renderer (`InfoHud`, stacked bottom-left, one line per
+  enabled module, nothing drawn when none are) — the same "one Module, one dedicated Hud" split
+  `XrayModule`/`XrayHud` already established, just with three lightweight modules sharing a
+  renderer instead of a 1:1 split, since none of the three have anything to render on their own.
+- `ModClientInit`'s combined HUD registration now wraps each individual renderer's call in its own
+  try/catch (extracted into a small `renderSafely` helper) instead of only Xray's, so one broken
+  HUD piece can never silently take down the others sharing the same `HudElementRegistry` entry.
+
 ## [1.11.0] — MaceDamage and ArrowDamage
 
 - **Added — MaceDamage**: bonus attack damage while your main hand holds a Mace, via a reversible

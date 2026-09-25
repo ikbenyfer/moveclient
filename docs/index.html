@@ -323,10 +323,10 @@
       <div class="hero-inner">
         <div class="eyebrow">Fabric · Minecraft 26.2 · Java 25</div>
         <h1>Move<span class="accent">Client</span></h1>
-        <p class="tagline">A client-side movement-mechanics test suite for a private, controlled world — 27 modules, a draggable ClickGUI, and JSON config, built and verified against the real 26.2 client.</p>
+        <p class="tagline">A client-side movement-mechanics test suite for a private, controlled world — 32 modules, a draggable ClickGUI, and JSON config, built and verified against the real 26.2 client.</p>
         <div class="cta-row">
-          <a class="btn-download" href="downloads/moveclient-1.11.0.jar" download>Download moveclient-1.11.0.jar</a>
-          <span class="btn-note">121 KB · v1.11.0</span>
+          <a class="btn-download" href="downloads/moveclient-1.12.0.jar" download>Download moveclient-1.12.0.jar</a>
+          <span class="btn-note">131 KB · v1.12.0</span>
           <a class="btn-secondary" href="https://github.com/ikbenyfer/moveclient">View source on GitHub</a>
         </div>
       </div>
@@ -343,12 +343,12 @@
   <section id="modules">
     <div class="section-head">
       <div class="kicker">What's inside</div>
-      <h2>27 modules across 3 categories</h2>
+      <h2>32 modules across 3 categories</h2>
       <p>Every module starts disabled, toggles from the ClickGUI or a bindable key, and persists its settings to a JSON config file.</p>
     </div>
 
     <div class="category-block">
-      <div class="category-label">Movement <span class="count">— 13</span></div>
+      <div class="category-label">Movement <span class="count">— 15</span></div>
       <div class="module-grid">
         <div class="module-card"><h3>Bhop</h3><p>Auto-hop + Quake-style air-strafe acceleration.</p></div>
         <div class="module-card"><h3>Flight</h3><p>Toggleable 3D flight with independent ascend/descend speed.</p></div>
@@ -363,11 +363,13 @@
         <div class="module-card"><h3>ElytraBoost</h3><p>Forward thrust while gliding, capped to a max speed.</p></div>
         <div class="module-card"><h3>Teleport</h3><p>One-shot teleport to wherever you're looking, up to Max Range.</p></div>
         <div class="module-card"><h3>Sneak</h3><p>Forces continuous sneaking without holding the key.</p></div>
+        <div class="module-card"><h3>Velocity</h3><p>Shows current movement speed in blocks/second.</p></div>
+        <div class="module-card"><h3>Keystrokes</h3><p>A classic WASD box grid showing which keys are held.</p></div>
       </div>
     </div>
 
     <div class="category-block">
-      <div class="category-label">Player <span class="count">— 12</span></div>
+      <div class="category-label">Player <span class="count">— 14</span></div>
       <div class="module-grid">
         <div class="module-card"><h3>Anti-Knockback</h3><p>Cancels external velocity on both axes via a self-predicted baseline.</p></div>
         <div class="module-card"><h3>NoFall</h3><p>Prevents fall damage; resets server-side fall distance once per landing.</p></div>
@@ -378,6 +380,8 @@
         <div class="module-card"><h3>Reach</h3><p>Extends block and entity interaction range.</p></div>
         <div class="module-card"><h3>MaceDamage</h3><p>Bonus attack damage while holding a Mace.</p></div>
         <div class="module-card"><h3>ArrowDamage</h3><p>Overrides every arrow you fire to a fixed damage value.</p></div>
+        <div class="module-card"><h3>ArmorHUD</h3><p>Worn armor icons with durability, bottom-right.</p></div>
+        <div class="module-card"><h3>CPS</h3><p>Attack/use clicks in the last real second.</p></div>
         <div class="module-card"><h3>Criticals</h3><p>Times a tiny hop so your own attacks land as critical hits.</p></div>
         <div class="module-card"><h3>Killaura</h3><p>Auto-attacks the nearest hostile mob — players are hard-excluded in code.</p></div>
         <div class="module-card"><h3>ClickAura</h3><p>Attacks the nearest entity you're looking at, but only on your own click — players are hard-excluded in code.</p></div>
@@ -385,10 +389,11 @@
     </div>
 
     <div class="category-block">
-      <div class="category-label">World <span class="count">— 2</span></div>
+      <div class="category-label">World <span class="count">— 3</span></div>
       <div class="module-grid">
         <div class="module-card"><h3>Xray</h3><p>Lists nearby ores through walls, plus a denylist texture pack, an allowlist "hide everything but ores" mode, and fullbright glowing ores.</p></div>
         <div class="module-card"><h3>Brightness</h3><p>Locks brightness to vanilla's true maximum.</p></div>
+        <div class="module-card"><h3>Coordinates</h3><p>X/Y/Z position and compass facing.</p></div>
       </div>
     </div>
   </section>
@@ -399,15 +404,15 @@
       <h2>Installing the download</h2>
     </div>
     <ol class="steps">
-      <li><p>Click <b>Download</b> above — you get the real <code>moveclient-1.11.0.jar</code> directly, no rename step needed.</p></li>
+      <li><p>Click <b>Download</b> above — you get the real <code>moveclient-1.12.0.jar</code> directly, no rename step needed.</p></li>
       <li><p>Install <b>Fabric Loader ≥0.19.5</b> and <b>Fabric API 0.161.0+26.2</b> for Minecraft 26.2, if you haven't already.</p></li>
-      <li><p>Drop <code>moveclient-1.11.0.jar</code> into your <code>mods/</code> folder alongside Fabric API, then launch.</p></li>
+      <li><p>Drop <code>moveclient-1.12.0.jar</code> into your <code>mods/</code> folder alongside Fabric API, then launch.</p></li>
       <li><p>In-game, press <b>;</b> (semicolon) to open the ClickGUI.</p></li>
     </ol>
   </section>
 
   <footer>
-    <span>MoveClient v1.11.0 — built for a private/controlled test world.</span>
+    <span>MoveClient v1.12.0 — built for a private/controlled test world.</span>
     <span class="scope-note">Client-side only, no server code or packet manipulation beyond documented vanilla client actions. Killaura and ClickAura are hard-scoped in code to never target players.</span>
   </footer>
 
